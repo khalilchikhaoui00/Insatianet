@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de commande - Insatianet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmation de commande</h1>
+        </div>
+        
+        <div class="content">
+            <p>Bonjour {{ order.user.email }},</p>
+            
+            <p>Nous vous confirmons la réception de votre commande n°{{ order.id }}.</p>
+            
+            <h3>Détails de la commande :</h3>
+            <ul>
+                <li>Date : {{ order.orderDate|date('d/m/Y H:i') }}</li>
+                <li>Montant total : {{ order.totalAmount }}€</li>
+                <li>Statut : {{ order.status }}</li>
+            </ul>
+            
+            <h3>Adresse de livraison :</h3>
+            <p>{{ order.shippingAddress }}</p>
+            
+            <p>Nous vous remercions de votre confiance.</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2025 Insatianet. Tous droits réservés.</p>
+            <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+        </div>
+    </div>
+</body>
+</html> 

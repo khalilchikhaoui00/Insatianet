@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier une carte bancaire - Insatianet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-custom-red text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">Modifier une carte bancaire</h2>
+                    <a href="{{ path('app_payment_method_index') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Retour aux cartes
+                    </a>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.cardholderName) }}
+                            {{ form_widget(form.cardholderName) }}
+                            {{ form_errors(form.cardholderName) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.cardNumber) }}
+                            {{ form_widget(form.cardNumber) }}
+                            {{ form_errors(form.cardNumber) }}
+                            <small class="form-text text-muted">
+                                Entrez les 16 chiffres sans espaces
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.expiryDate) }}
+                            {{ form_widget(form.expiryDate) }}
+                            {{ form_errors(form.expiryDate) }}
+                            <small class="form-text text-muted">
+                                Format : MM/YYYY (exemple : 12/2025)
+                            </small>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form_widget(form.isDefault) }}
+                                {{ form_label(form.isDefault) }}
+                            </div>
+                            {{ form_errors(form.isDefault) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                        </button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,173 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ product.name }} - Détails du produit{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .main-image {
+        height: 400px;
+        object-fit: contain;
+        width: 100%;
+    }
+    .thumbnail {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.2s;
+    }
+    .thumbnail:hover, .thumbnail.active {
+        border-color: #007bff;
+    }
+    .promotion-tag {
+        background-color: #dc3545;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        display: inline-block;
+        margin-bottom: 1rem;
+    }
+    .original-price {
+        text-decoration: line-through;
+        color: #6c757d;
+        font-size: 1.2rem;
+    }
+    .final-price {
+        color: #dc3545;
+        font-size: 2rem;
+        font-weight: bold;
+    }
+    .stock-status {
+        font-size: 1.1rem;
+        margin: 1rem 0;
+    }
+    .in-stock { color: #28a745; }
+    .low-stock { color: #ffc107; }
+    .out-of-stock { color: #dc3545; }
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin-bottom: 2rem;
+    }
+    .product-description {
+        white-space: pre-line;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_product_index') }}">Produits</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+        </ol>
+    </nav>
+
+    <div class="row">
+        <!-- Image Gallery -->
+        <div class="col-md-6">
+            <div class="main-image-container mb-3">
+                {% if product.productImages|length > 0 %}
+                    <img src="/Insatianet/public/uploads/products/{{ product.productImages|first.filename }}" 
+                         class="main-image" 
+                         id="mainImage"
+                         alt="{{ product.name }}">
+                {% else %}
+                    <div class="text-center p-5 bg-light main-image">
+                        <i class="fas fa-image fa-5x text-muted"></i>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if product.productImages|length > 1 %}
+                <div class="thumbnails d-flex gap-2 overflow-auto">
+                    {% for image in product.productImages %}
+                        <img src="/Insatianet/public/uploads/products/{{ image.filename }}" 
+                             class="thumbnail {% if loop.first %}active{% endif %}"
+                             onclick="updateMainImage(this, '/Insatianet/public/uploads/products/{{ image.filename }}')"
+                             alt="Thumbnail {{ loop.index }}">
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1 class="mb-3">{{ product.name }}</h1>
+
+            {% if product.promotion %}
+                <div class="promotion-tag">
+                    <i class="fas fa-tag me-2"></i>-{{ product.promotion }}% de réduction
+                </div>
+            {% endif %}
+
+            <div class="price-section mb-4">
+                {% if product.promotion %}
+                    <div class="original-price">{{ product.price|number_format(2, ',', ' ') }} €</div>
+                    <div class="final-price">{{ product.priceAfterPromotion|number_format(2, ',', ' ') }} €</div>
+                {% else %}
+                    <div class="final-price">{{ product.price|number_format(2, ',', ' ') }} €</div>
+                {% endif %}
+            </div>
+
+            <div class="stock-status">
+                {% if product.stock > 10 %}
+                    <span class="in-stock">
+                        <i class="fas fa-check-circle"></i> En stock
+                    </span>
+                {% elseif product.stock > 0 %}
+                    <span class="low-stock">
+                        <i class="fas fa-exclamation-circle"></i> Plus que {{ product.stock }} en stock
+                    </span>
+                {% else %}
+                    <span class="out-of-stock">
+                        <i class="fas fa-times-circle"></i> Rupture de stock
+                    </span>
+                {% endif %}
+            </div>
+
+            {% if product.category %}
+                <div class="mb-3">
+                    <strong>Catégorie:</strong> 
+                    <span class="badge bg-secondary">{{ product.category.name }}</span>
+                </div>
+            {% endif %}
+
+            <div class="description mb-4">
+                <h4>Description</h4>
+                <p class="product-description">{{ product.description }}</p>
+            </div>
+
+            {% if product.stock > 0 %}
+                <form action="{{ path('app_cart_add', {'id': product.id}) }}" method="POST" class="mb-4">
+                    <div class="input-group mb-3" style="max-width: 200px;">
+                        <span class="input-group-text">Quantité</span>
+                        <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-shopping-cart me-2"></i>Ajouter au panier
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+function updateMainImage(thumbnail, newSrc) {
+    // Update main image
+    document.getElementById('mainImage').src = newSrc;
+    
+    // Update active thumbnail
+    document.querySelectorAll('.thumbnail').forEach(thumb => {
+        thumb.classList.remove('active');
+    });
+    thumbnail.classList.add('active');
+}
+</script>
+{% endblock %}
+{% endblock %} 

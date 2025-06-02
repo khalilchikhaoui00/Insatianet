@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Welcome!{% endblock %} - Insatianet</title>
+        <link rel="icon" href="{{ asset('favicon.ico') }}">
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}?v=1.2">
+        <style>
+            .navbar {
+                background-color: #121212 !important;
+            }
+            .navbar-brand,
+            .nav-link,
+            .nav-link i {
+                color: #FFD700 !important;
+                font-weight: 600;
+            }
+            .nav-link:hover,
+            .nav-link:hover i {
+                color: #FFF8DC !important;
+            }
+            .navbar-toggler {
+                border-color: #FFD700 !important;
+            }
+            .navbar-toggler-icon {
+                background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 215, 0, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="{{ path('app_home') }}">
+                    <i class="fas fa-laptop-code me-2"></i>
+                    Insatianet
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_home') }}">
+                                <i class="fas fa-home me-1"></i>Accueil
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ path('app_product_index') }}">
+                                <i class="fas fa-shopping-basket me-1"></i>Produits
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link cart-badge" href="{{ path('app_cart') }}" {% if app.session.get('cart')|length > 0 %}data-count="{{ app.session.get('cart')|length }}"{% endif %}>
+                                <i class="fas fa-shopping-cart me-1"></i>Panier
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav">
+                        {% if app.user %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user-circle user-icon me-2"></i>
+                                    <span>{{ app.user.email }}</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    {% if not is_granted('ROLE_ADMIN') %}
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('app_profile') }}">
+                                                <i class="fas fa-user me-2"></i>Mon profil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('app_order_history') }}">
+                                                <i class="fas fa-shopping-bag me-2"></i>Mes commandes
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a class="dropdown-item" href="{{ path('app_admin_dashboard') }}">
+                                                <i class="fas fa-cogs me-2"></i>Administration
+                                            </a>
+                                        </li>
+                                    {% endif %}
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item" href="{{ path('app_logout') }}">
+                                            <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_login') }}">
+                                    <i class="fas fa-sign-in-alt me-1"></i>Connexion
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ path('app_register') }}">
+                                    <i class="fas fa-user-plus me-1"></i>Inscription
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="container py-5">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+            {% block body %}{% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer>
+            <div class="container py-4">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-laptop-code me-2"></i>Insatianet</h5>
+                        <p>Votre spécialiste en matériel informatique et mobile. Qualité et service garantis.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Liens rapides</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="{{ path('app_home') }}"><i class="fas fa-chevron-right me-2"></i>Accueil</a></li>
+                            <li><a href="{{ path('app_product_index') }}"><i class="fas fa-chevron-right me-2"></i>Produits</a></li>
+                            <li><a href="{{ path('app_cart') }}"><i class="fas fa-chevron-right me-2"></i>Panier</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h5>Contact</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-phone me-2"></i>+216 XX XXX XXX</li>
+                            <li><i class="fas fa-envelope me-2"></i>contact@insatianet.com</li>
+                            <li><i class="fas fa-map-marker-alt me-2"></i>Tunis, Tunisie</li>
+                        </ul>
+                    </div>
+                </div>
+                <hr class="mt-4 mb-3">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-0">© 2025 Insatianet. Tous droits réservés.</p>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- Loading Spinner -->
+        <div class="spinner-overlay d-none">
+            <div class="spinner"></div>
+        </div>
+
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Custom JS -->
+        <script>
+            // Show loading spinner on form submissions
+            document.addEventListener('DOMContentLoaded', function() {
+                const forms = document.querySelectorAll('form');
+                const spinner = document.querySelector('.spinner-overlay');
+                
+                forms.forEach(form => {
+                    form.addEventListener('submit', function() {
+                        spinner.classList.remove('d-none');
+                    });
+                });
+            });
+        </script>
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon profil - Insatianet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-custom-red text-white">
+                    <h2 class="h4 mb-0">Mon profil</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="list-group">
+                                <a href="{{ path('app_profile') }}" class="list-group-item list-group-item-action active">
+                                    <i class="fas fa-user me-2"></i>Informations personnelles
+                                </a>
+                                <a href="{{ path('app_order_history') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-history me-2"></i>Historique des commandes
+                                </a>
+                                <a href="{{ path('app_payment_method_index') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-credit-card me-2"></i>Mes moyens de paiement
+                                </a>
+                                <a href="{{ path('app_change_password') }}" class="list-group-item list-group-item-action">
+                                    <i class="fas fa-key me-2"></i>Changer le mot de passe
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            {% for flash_error in app.flashes('error') %}
+                                <div class="alert alert-danger" role="alert">
+                                    {{ flash_error }}
+                                </div>
+                            {% endfor %}
+
+                            {% for flash_success in app.flashes('success') %}
+                                <div class="alert alert-success" role="alert">
+                                    {{ flash_success }}
+                                </div>
+                            {% endfor %}
+
+                            <h3 class="h5 mb-4">Informations personnelles</h3>
+                            
+                            {% if form is defined %}
+                                {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
+                                    <div class="mb-3">
+                                        {{ form_label(form.firstName) }}
+                                        {{ form_widget(form.firstName) }}
+                                        {{ form_errors(form.firstName) }}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.lastName) }}
+                                        {{ form_widget(form.lastName) }}
+                                        {{ form_errors(form.lastName) }}
+                                    </div>
+
+                                    <div class="mb-3">
+                                        {{ form_label(form.birthDate) }}
+                                        {{ form_widget(form.birthDate) }}
+                                        {{ form_errors(form.birthDate) }}
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                                    </button>
+                                {{ form_end(form) }}
+                            {% else %}
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Nom :</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ app.user.lastName|default('Non renseigné') }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Prénom :</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ app.user.firstName|default('Non renseigné') }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <strong>Email :</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ app.user.email }}
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-4">
+                                        <strong>Date de naissance :</strong>
+                                    </div>
+                                    <div class="col-md-8">
+                                        {{ app.user.birthDate ? app.user.birthDate|date('d/m/Y') : 'Non renseignée' }}
+                                    </div>
+                                </div>
+
+                                <a href="{{ path('app_profile_edit') }}" class="btn btn-primary">
+                                    <i class="fas fa-edit me-2"></i>Modifier mes informations
+                                </a>
+                            {% endif %}
+                            
+                            <div class="mt-4">
+                                <h3 class="h5 mb-3">Actions rapides</h3>
+                                <div class="d-grid gap-2">
+                                    <a href="{{ path('app_payment_method_new') }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-plus me-2"></i>Ajouter une carte bancaire
+                                    </a>
+                                    <a href="{{ path('app_change_password') }}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-key me-2"></i>Modifier mon mot de passe
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

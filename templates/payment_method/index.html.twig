@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes moyens de paiement - Insatianet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-header bg-custom-red text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">Mes moyens de paiement</h2>
+                    <a href="{{ path('app_profile') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Retour au profil
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% if payment_methods is empty %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-credit-card fa-3x text-muted mb-3"></i>
+                            <p class="lead">Vous n'avez pas encore enregistré de carte bancaire.</p>
+                            <a href="{{ path('app_payment_method_new') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Ajouter une carte
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="mb-4">
+                            <a href="{{ path('app_payment_method_new') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Ajouter une nouvelle carte
+                            </a>
+                        </div>
+                        <div class="row">
+                            {% for payment_method in payment_methods %}
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 {% if payment_method.isDefault %}border-primary{% endif %}">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="card-title">{{ payment_method.brand }}</h5>
+                                                    <p class="card-text">
+                                                        {{ payment_method.cardholderName }}<br>
+                                                        {{ payment_method.maskedCardNumber }}<br>
+                                                        Expire le {{ payment_method.expiryDate }}
+                                                    </p>
+                                                    {% if payment_method.isDefault %}
+                                                        <span class="badge bg-primary">Carte par défaut</span>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-link text-dark" type="button" data-bs-toggle="dropdown">
+                                                        <i class="fas fa-ellipsis-v"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li>
+                                                            <a class="dropdown-item" href="{{ path('app_payment_method_edit', {'id': payment_method.id}) }}">
+                                                                <i class="fas fa-edit me-2"></i>Modifier
+                                                            </a>
+                                                        </li>
+                                                        <li>
+                                                            <form action="{{ path('app_payment_method_delete', {'id': payment_method.id}) }}" method="post" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette carte ?');">
+                                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ payment_method.id) }}">
+                                                                <button type="submit" class="dropdown-item text-danger">
+                                                                    <i class="fas fa-trash-alt me-2"></i>Supprimer
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

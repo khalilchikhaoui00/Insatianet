@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 20px;
+        }
+        .company-info {
+            margin-bottom: 30px;
+        }
+        .invoice-details {
+            margin-bottom: 30px;
+        }
+        .customer-info {
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total-section {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>FACTURE</h1>
+        <h2>Insatianet</h2>
+    </div>
+
+    <div class="company-info">
+        <p><strong>Insatianet SARL</strong><br>
+        123 Rue du Commerce<br>
+        75001 Paris, France<br>
+        Tél : 01 23 45 67 89<br>
+        Email : contact@insatianet.fr</p>
+    </div>
+
+    <div class="invoice-details">
+        <p><strong>Facture N° :</strong> F{{ order.id }}-{{ order.orderDate|date('Ymd') }}</p>
+        <p><strong>Date :</strong> {{ order.orderDate|date('d/m/Y') }}</p>
+        <p><strong>Référence commande :</strong> #{{ order.id }}</p>
+    </div>
+
+    <div class="customer-info">
+        <h3>FACTURER À</h3>
+        <p>{{ order.user.firstName }} {{ order.user.lastName }}<br>
+        {{ order.shippingAddress|nl2br }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th>Quantité</th>
+                <th>Prix unitaire</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price|number_format(2, ',', ' ') }}€</td>
+                <td>{{ item.total|number_format(2, ',', ' ') }}€</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Total HT</strong></td>
+                <td>{{ (order.totalAmount / 1.2)|number_format(2, ',', ' ') }}€</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>TVA (20%)</strong></td>
+                <td>{{ (order.totalAmount - (order.totalAmount / 1.2))|number_format(2, ',', ' ') }}€</td>
+            </tr>
+            <tr>
+                <td colspan="3" style="text-align: right;"><strong>Total TTC</strong></td>
+                <td><strong>{{ order.totalAmount|number_format(2, ',', ' ') }}€</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="footer">
+        <p>Merci de votre confiance !</p>
+        <p>Insatianet SARL - SIRET : 123 456 789 00001 - TVA : FR12345678900<br>
+        RCS Paris B 123 456 789 - Capital social : 10 000€</p>
+    </div>
+</body>
+</html> 

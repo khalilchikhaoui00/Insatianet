@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Réinitialiser votre mot de passe - Insatianet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-custom-red text-white">
+                    <h1 class="h3 mb-0">Réinitialiser votre mot de passe</h1>
+                </div>
+                <div class="card-body">
+                    {{ form_start(resetForm) }}
+                        <div class="mb-3">
+                            {{ form_label(resetForm.plainPassword.first) }}
+                            {{ form_widget(resetForm.plainPassword.first) }}
+                            {{ form_errors(resetForm.plainPassword.first) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(resetForm.plainPassword.second) }}
+                            {{ form_widget(resetForm.plainPassword.second) }}
+                            {{ form_errors(resetForm.plainPassword.second) }}
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-key me-2"></i>Réinitialiser le mot de passe
+                            </button>
+                        </div>
+                    {{ form_end(resetForm) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

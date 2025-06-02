@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .card-details { background: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .button { display: inline-block; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+        .warning { color: #dc3545; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmation de votre nouvelle carte bancaire</h1>
+        </div>
+
+        <p>Bonjour {{ user.firstName }},</p>
+
+        <p>Une nouvelle carte bancaire a été ajoutée à votre compte Insatianet.</p>
+
+        <div class="card-details">
+            <h3>Détails de la carte :</h3>
+            <p><strong>Titulaire :</strong> {{ paymentMethod.cardholderName }}</p>
+            <p><strong>Numéro :</strong> {{ paymentMethod.maskedCardNumber }}</p>
+            <p><strong>Date d'expiration :</strong> {{ paymentMethod.expiryDate }}</p>
+            <p><strong>Type de carte :</strong> {{ paymentMethod.brand }}</p>
+            {% if paymentMethod.isDefault %}
+                <p><em>Cette carte a été définie comme votre moyen de paiement par défaut.</em></p>
+            {% endif %}
+        </div>
+
+        <p>Si vous n'êtes pas à l'origine de cet ajout, veuillez immédiatement :</p>
+        <ol>
+            <li>Vous connecter à votre compte</li>
+            <li>Supprimer cette carte dans la section "Mes moyens de paiement"</li>
+            <li>Changer votre mot de passe</li>
+            <li>Contacter notre service client</li>
+        </ol>
+
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="{{ url('app_payment_method_index') }}" class="button">Gérer mes cartes bancaires</a>
+        </p>
+
+        <div class="warning">
+            <p><strong>Note de sécurité :</strong> Pour votre sécurité, nous ne stockons jamais l'intégralité de vos données bancaires.</p>
+        </div>
+
+        <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #666;">
+            <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            <p>© {{ "now"|date('Y') }} Insatianet. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html> 

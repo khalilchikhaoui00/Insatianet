@@ -1,0 +1,133 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nos Produits - E-Commerce{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .product-card {
+        height: 100%;
+        transition: transform 0.2s;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+    }
+    .product-image {
+        height: 200px;
+        object-fit: cover;
+    }
+    .promotion-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: #dc3545;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-weight: bold;
+    }
+    .original-price {
+        text-decoration: line-through;
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    .final-price {
+        color: #dc3545;
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+    .stock-status {
+        font-size: 0.9rem;
+        margin-top: 10px;
+    }
+    .in-stock {
+        color: #28a745;
+    }
+    .low-stock {
+        color: #ffc107;
+    }
+    .out-of-stock {
+        color: #dc3545;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1 class="mb-4">Nos Produits</h1>
+
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card h-100">
+                    {% if product.productImages|length > 0 %}
+                        {% set firstImage = product.productImages|first %}
+                        <img src="/Insatianet/public/uploads/products/{{ firstImage.filename }}" 
+                             class="card-img-top product-image" 
+                             alt="{{ product.name }}">
+                    {% else %}
+                        <div class="text-center p-5 bg-light">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+
+                    {% if product.promotion %}
+                        <div class="promotion-badge">
+                            -{{ product.promotion }}%
+                        </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="card-text text-muted">{{ product.description|length > 100 ? product.description|slice(0, 100) ~ '...' : product.description }}</p>
+                        
+                        <div class="mt-auto">
+                            <div class="price-section mb-3">
+                                {% if product.promotion %}
+                                    <div class="original-price">{{ product.price|number_format(2, ',', ' ') }} €</div>
+                                    <div class="final-price">{{ product.priceAfterPromotion|number_format(2, ',', ' ') }} €</div>
+                                {% else %}
+                                    <div class="final-price">{{ product.price|number_format(2, ',', ' ') }} €</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="stock-status">
+                                {% if product.stock > 10 %}
+                                    <span class="in-stock">
+                                        <i class="fas fa-check-circle"></i> En stock
+                                    </span>
+                                {% elseif product.stock > 0 %}
+                                    <span class="low-stock">
+                                        <i class="fas fa-exclamation-circle"></i> Plus que {{ product.stock }} en stock
+                                    </span>
+                                {% else %}
+                                    <span class="out-of-stock">
+                                        <i class="fas fa-times-circle"></i> Rupture de stock
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="mt-3">
+                                <a href="{{ path('app_product_show', {'id': product.id}) }}" class="btn btn-outline-primary">
+                                    <i class="fas fa-eye me-2"></i>Voir détails
+                                </a>
+                                {% if product.stock > 0 %}
+                                    <a href="{{ path('app_cart_add', {'id': product.id}) }}" class="btn btn-primary">
+                                        <i class="fas fa-shopping-cart me-2"></i>Ajouter
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    Aucun produit disponible pour le moment.
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

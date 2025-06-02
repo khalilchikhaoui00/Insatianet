@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - Insatianet{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-custom-red text-white">
+                        <h1 class="h3 mb-0">Inscription</h1>
+                    </div>
+                    <div class="card-body">
+                        {% for flash_error in app.flashes('verify_email_error') %}
+                            <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+                        {% endfor %}
+
+                        {{ form_start(registrationForm) }}
+                            <div class="mb-3">
+                                {{ form_row(registrationForm.firstName) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(registrationForm.lastName) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(registrationForm.email) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(registrationForm.birthDate) }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form_row(registrationForm.plainPassword) }}
+                            </div>
+                            <div class="mb-3 form-check">
+                                {{ form_row(registrationForm.agreeTerms) }}
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-user-plus me-2"></i>S'inscrire
+                                </button>
+                            </div>
+                        {{ form_end(registrationForm) }}
+
+                        <div class="mt-3 text-center">
+                            <p class="mb-0">Déjà inscrit ?</p>
+                            <a href="{{ path('app_login') }}" class="text-decoration-none">
+                                <i class="fas fa-sign-in-alt me-2"></i>Se connecter
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

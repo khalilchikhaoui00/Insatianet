@@ -1,0 +1,163 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter une carte bancaire - Insatianet{% endblock %}
+
+{% block stylesheets %}
+{{ parent() }}
+<style>
+    .card-brand {
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    .form-group {
+        position: relative;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-custom-red text-white d-flex justify-content-between align-items-center">
+                    <h2 class="h4 mb-0">Ajouter une carte bancaire</h2>
+                    <a href="{{ path('app_payment_method_index') }}" class="btn btn-outline-light btn-sm">
+                        <i class="fas fa-arrow-left me-2"></i>Retour aux cartes
+                    </a>
+                </div>
+                <div class="card-body">
+                    {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate', 'id': 'payment-form'}}) }}
+                        <div class="mb-3">
+                            {{ form_label(form.cardholderName) }}
+                            {{ form_widget(form.cardholderName) }}
+                            {{ form_errors(form.cardholderName) }}
+                        </div>
+
+                        <div class="mb-3 form-group">
+                            {{ form_label(form.cardNumber) }}
+                            {{ form_widget(form.cardNumber, {'attr': {'data-card-format': 'true'}}) }}
+                            {{ form_errors(form.cardNumber) }}
+                            <div class="card-brand"></div>
+                            <small class="form-text text-muted">
+                                Les espaces seront automatiquement ajoutés
+                            </small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.expiryDate) }}
+                                {{ form_widget(form.expiryDate, {'attr': {'data-expiry-format': 'true'}}) }}
+                                {{ form_errors(form.expiryDate) }}
+                                <small class="form-text text-muted">
+                                    Format : MM/YYYY (exemple : 12/2025)
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.cvc) }}
+                                {{ form_widget(form.cvc) }}
+                                {{ form_errors(form.cvc) }}
+                                <small class="form-text text-muted">
+                                    3 chiffres au dos de la carte
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                {{ form_widget(form.isDefault) }}
+                                {{ form_label(form.isDefault) }}
+                            </div>
+                            {{ form_errors(form.isDefault) }}
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Enregistrer la carte
+                        </button>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Format card number with spaces
+    const cardNumberInput = document.querySelector('[data-card-format]');
+    if (cardNumberInput) {
+        cardNumberInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 16) value = value.slice(0, 16);
+            
+            // Add spaces every 4 digits
+            value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+            e.target.value = value;
+
+            // Show card brand
+            const brandDiv = document.querySelector('.card-brand');
+            if (value.length > 0) {
+                let brand = '';
+                if (value[0] === '4') brand = 'Visa';
+                else if (value[0] === '5') brand = 'MasterCard';
+                else if (['34', '37'].includes(value.slice(0, 2))) brand = 'American Express';
+                
+                brandDiv.textContent = brand;
+            } else {
+                brandDiv.textContent = '';
+            }
+        });
+    }
+
+    // Format expiry date
+    const expiryInput = document.querySelector('[data-expiry-format]');
+    if (expiryInput) {
+        expiryInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                let month = value.slice(0, 2);
+                if (month > 12) month = '12';
+                if (value.length > 2) {
+                    value = month + '/' + value.slice(2);
+                } else {
+                    value = month;
+                }
+                if (value.length > 7) value = value.slice(0, 7);
+            }
+            e.target.value = value;
+        });
+    }
+
+    // Form validation
+    const form = document.getElementById('payment-form');
+    form.addEventListener('submit', function(e) {
+        const cardNumber = cardNumberInput.value.replace(/\s/g, '');
+        if (cardNumber.length !== 16) {
+            e.preventDefault();
+            alert('Le numéro de carte doit contenir 16 chiffres');
+            return;
+        }
+
+        const expiry = expiryInput.value;
+        if (!/^(0[1-9]|1[0-2])\/20[2-9][0-9]$/.test(expiry)) {
+            e.preventDefault();
+            alert('La date d\'expiration doit être au format MM/YYYY et être valide');
+            return;
+        }
+
+        const cvc = document.getElementById('{{ form.cvc.vars.id }}').value;
+        if (!/^[0-9]{3}$/.test(cvc)) {
+            e.preventDefault();
+            alert('Le code CVC doit contenir 3 chiffres');
+            return;
+        }
+    });
+});
+</script>
+{% endblock %} 

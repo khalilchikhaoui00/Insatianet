@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email de réinitialisation envoyé - Insatianet{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-custom-red text-white">
+                    <h1 class="h3 mb-0">Email envoyé</h1>
+                </div>
+                <div class="card-body">
+                    {% for message in app.flashes('success') %}
+                        <div class="alert alert-success">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    {% for message in app.flashes('error') %}
+                        <div class="alert alert-danger">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+
+                    <p>Si vous n'avez pas reçu l'email, veuillez :</p>
+                    <ul>
+                        <li>Vérifier votre dossier spam</li>
+                        <li>Attendre quelques minutes</li>
+                        <li>Vérifier que l'adresse email saisie est correcte</li>
+                    </ul>
+
+                    <p>Le lien expirera dans {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+
+                    <div class="mt-3 text-center">
+                        <a href="{{ path('app_forgot_password_request') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-redo me-2"></i>Renvoyer un email
+                        </a>
+                    </div>
+
+                    <div class="mt-3 text-center">
+                        <a href="{{ path('app_login') }}" class="text-decoration-none">
+                            <i class="fas fa-arrow-left me-2"></i>Retour à la connexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

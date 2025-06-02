@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .status-update { background: #f9f9f9; padding: 20px; border-radius: 5px; margin: 20px 0; }
+        .button { display: inline-block; padding: 10px 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Mise à jour de votre commande #{{ order.id }}</h1>
+        </div>
+
+        <p>Bonjour {{ order.user.firstName }},</p>
+
+        <div class="status-update">
+            <p>Le statut de votre commande a été mis à jour :</p>
+            <p><strong>Ancien statut :</strong> {{ oldStatus }}</p>
+            <p><strong>Nouveau statut :</strong> {{ newStatus }}</p>
+        </div>
+
+        <p>Détails de la commande :</p>
+        <ul>
+            <li>Numéro de commande : #{{ order.id }}</li>
+            <li>Date : {{ order.orderDate|date('d/m/Y H:i') }}</li>
+            <li>Montant total : {{ order.totalAmount }}€</li>
+        </ul>
+
+        <p style="text-align: center; margin-top: 30px;">
+            <a href="{{ url('app_order_show', {'id': order.id}) }}" class="button">Voir ma commande</a>
+        </p>
+
+        <div style="margin-top: 40px; text-align: center; font-size: 12px; color: #666;">
+            <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+            <p>© {{ "now"|date('Y') }} Insatianet. Tous droits réservés.</p>
+        </div>
+    </div>
+</body>
+</html> 

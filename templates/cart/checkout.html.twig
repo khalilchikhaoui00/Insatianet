@@ -1,0 +1,141 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement de la commande{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <h1>Paiement de la commande</h1>
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Informations de livraison</h5>
+                    <form action="{{ path('app_order_create') }}" method="post" id="payment-form">
+                        <div class="mb-3">
+                            <label for="shippingAddress" class="form-label">Adresse de livraison</label>
+                            <textarea name="shippingAddress" id="shippingAddress" class="form-control" rows="3" required></textarea>
+                        </div>
+
+                        <h5 class="mt-4">Mode de paiement</h5>
+                        
+                        {% if app.user.paymentMethods|length > 0 %}
+                            <div class="mb-4">
+                                <h6>Cartes enregistrées</h6>
+                                {% for method in app.user.paymentMethods %}
+                                    <div class="form-check mb-2">
+                                        <input class="form-check-input" type="radio" name="paymentType" 
+                                               id="savedCard{{ method.id }}" value="saved_{{ method.id }}"
+                                               {% if method.isDefault %}checked{% endif %}>
+                                        <label class="form-check-label" for="savedCard{{ method.id }}">
+                                            {{ method.brand }} se terminant par {{ method.cardNumber|slice(-4) }}
+                                            (expire le {{ method.expiryDate }})
+                                            {% if method.isDefault %}<span class="badge bg-primary">Par défaut</span>{% endif %}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+                                
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="paymentType" 
+                                           id="newCard" value="new"
+                                           {% if not app.user.paymentMethods|length %}checked{% endif %}>
+                                    <label class="form-check-label" for="newCard">
+                                        Utiliser une nouvelle carte
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div id="newCardForm" {% if app.user.paymentMethods|length > 0 %}style="display: none;"{% endif %}>
+                            <div class="mb-3">
+                                <label for="cardNumber" class="form-label">Numéro de carte</label>
+                                <input type="text" name="cardNumber" id="cardNumber" class="form-control" pattern="\d{16}" maxlength="16" placeholder="1234567890123456">
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardExpiry" class="form-label">Date d'expiration (MM/YY)</label>
+                                    <input type="text" name="cardExpiry" id="cardExpiry" class="form-control" pattern="\d{2}/\d{2}" maxlength="5" placeholder="MM/YY">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="cardCvv" class="form-label">CVV</label>
+                                    <input type="text" name="cardCvv" id="cardCvv" class="form-control" pattern="\d{3}" maxlength="3" placeholder="123">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="saveCard" id="saveCard" value="1">
+                                    <label class="form-check-label" for="saveCard">
+                                        Sauvegarder cette carte pour mes prochains achats
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{{ path('app_cart') }}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Retour au panier
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-lock"></i> Payer {{ total|number_format(2, '.', ',') }}€
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Récapitulatif</h5>
+                    <p class="card-text">
+                        <strong>Total à payer :</strong> {{ total|number_format(2, '.', ',') }}€
+                    </p>
+                    <hr>
+                    <small class="text-muted">
+                        <i class="fas fa-lock"></i> Le paiement est sécurisé et vos informations sont cryptées.
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newCardForm = document.getElementById('newCardForm');
+    const cardInputs = newCardForm.querySelectorAll('input');
+    const paymentTypeInputs = document.querySelectorAll('input[name="paymentType"]');
+
+    function toggleNewCardForm(showForm) {
+        newCardForm.style.display = showForm ? 'block' : 'none';
+        cardInputs.forEach(input => {
+            input.required = showForm;
+        });
+    }
+
+    paymentTypeInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            toggleNewCardForm(this.value === 'new');
+        });
+    });
+
+    // Initial state
+    const selectedPaymentType = document.querySelector('input[name="paymentType"]:checked');
+    if (selectedPaymentType) {
+        toggleNewCardForm(selectedPaymentType.value === 'new');
+    }
+});
+</script>
+{% endblock %}
+
+{% endblock %} 

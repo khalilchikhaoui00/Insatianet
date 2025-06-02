@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Insatianet - Votre spécialiste en matériel informatique{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold" style="color: var(--primary-color);">Bienvenue chez Insatianet</h1>
+        <p class="lead" style="color: var(--text-secondary);">Votre partenaire de confiance pour tout votre matériel informatique et mobile</p>
+    </div>
+
+    <div class="row g-4 py-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title" style="color: var(--primary-color);"><i class="fas fa-laptop me-2"></i>PC & Portables</h3>
+                    <p class="card-text" style="color: var(--text-secondary);">Large gamme d'ordinateurs portables et de bureau pour tous les besoins.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title" style="color: var(--primary-color);"><i class="fas fa-desktop me-2"></i>Moniteurs</h3>
+                    <p class="card-text" style="color: var(--text-secondary);">Des écrans haute qualité pour une expérience visuelle optimale.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h3 class="card-title" style="color: var(--primary-color);"><i class="fas fa-mobile-alt me-2"></i>Smartphones</h3>
+                    <p class="card-text" style="color: var(--text-secondary);">Les derniers smartphones des meilleures marques.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-5">
+        <p class="lead mb-5" style="color: var(--text-secondary);">Découvrez notre sélection de produits de qualité à des prix compétitifs</p>
+        <a class="btn btn-primary btn-lg" href="{{ path('app_product_index') }}">
+            <i class="fas fa-shopping-basket me-2"></i>
+            Voir nos produits
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(255, 215, 0, 0.15);
+}
+
+.btn-primary {
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+</style>
+{% endblock %} 
